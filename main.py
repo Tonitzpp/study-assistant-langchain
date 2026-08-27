@@ -19,3 +19,12 @@ model = ChatGroq(
     temperature = 0.3,
     api_key = api_key
 )
+
+files = glob.blob("documentos/*.md") + glob.glob("documentos/*.txt")
+documents = sum([TextLoader(f, encoding = "utf-8").load() for f in files], [])
+
+parts = RecursiveCharacterTextSplitter(
+    chunk_size = 800,
+    chunk_overlap = 100
+).split_documents(documents)
+
