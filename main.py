@@ -8,6 +8,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.chat_history import InMemoryChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_community.embeddings import HuggingFaceEmbeddings
 import os
 import glob
 
@@ -32,9 +33,18 @@ documents = sum([TextLoader(f, encoding = "utf-8").load() for f in files], [])
 # loaded pages test
 #print(f"{len(documents)} loaded pages")
 
-parts = RecursiveCharacterTextSplitter(
+chunks = RecursiveCharacterTextSplitter(
     chunk_size = 800,
     chunk_overlap = 100
 ).split_documents(documents)
 # generated parts test
 #print(f"{len(parts)} generated parts")
+
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+recovered_data = FAISS.from_documents(
+    chunks, embeddings
+).as_retriever(search_kwargs = {"k": 3})
+
+# embeddings and retriever test
+#snippets = recovered_data.invoke("O que é Pandas?")
+#print(snippets[0].page_content)
