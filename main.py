@@ -11,4 +11,11 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 import os
 import glob
 
+load_dotenv()
+api_key = os.getenv("GROQ_API_KEY")
 
+model = ChatGroq(
+    model = "openai/gpt-oss-20b",
+    temperature = 0.3,
+    api_key = api_key
+)
