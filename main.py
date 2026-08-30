@@ -48,3 +48,10 @@ recovered_data = FAISS.from_documents(
 # embeddings and retriever test
 #snippets = recovered_data.invoke("O que é Pandas?")
 #print(snippets[0].page_content)
+
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "Você é um assistente de respostas que responde as perguntas com base nos arquivos de anotações fornecidas."),
+    ("placeholder", "{chat_history}"),
+    ("human", "\n{query}\n\nAnotações relevantes: \n{context}")
+])
+
