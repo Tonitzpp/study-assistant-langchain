@@ -55,3 +55,19 @@ prompt = ChatPromptTemplate.from_messages([
     ("human", "\n{query}\n\nAnotações relevantes: \n{context}")
 ])
 
+chain = prompt | model | StrOutputParser()
+
+memory = {}
+
+# função para o histórico de sessões, se a sessão não existe ela é criada em memory
+def get_session_history(session:str):
+    if session not in memory:
+        memory[session] = InMemoryChatMessageHistory()
+    return memory[session]
+
+chain_with_memory = RunnableWithMessageHistory(
+    runnable=chain,
+    get_session_history = get_session_history,
+    input_messages_key="query",
+    history_messages_key="chat_history"
+)
